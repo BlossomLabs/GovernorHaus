@@ -1,14 +1,33 @@
-import { viem } from "hardhat";
+import { viem, run } from "hardhat";
 import { parseEventLogs } from 'viem'
-async function main() {
 
+async function deployAndVerify(contractName: string, args: any[]) {
+  const contract = await viem.deployContract(contractName, args);
+  if (process.env.BLOCKSCOUT_KEY) {
+    try {
+      await run("verify:verify", {
+        address: contract.address,
+        constructorArguments: args
+      });
+    } catch(e: any) {
+      if (e.name === 'ContractAlreadyVerifiedError') {
+        console.log(`Contract ${contractName} already verified`)
+      }
+      console.error(e);
+    }
+  }
+  return contract;
+}
+
+async function main() {
   const publicClient = await viem.getPublicClient()
   const [wallet] = await viem.getWalletClients()
 
-  const erc20Factory = await viem.deployContract("ERC20Factory", []);
-  const ozGovernorFactory = await viem.deployContract("OZGovernorFactory", []);
-  const timelockControllerFactory = await viem.deployContract("TimelockControllerFactory", []);
-  const governorHaus = await viem.deployContract("GovernorHaus", [erc20Factory.address, ozGovernorFactory.address, timelockControllerFactory.address]);
+  const erc20Factory = await deployAndVerify("ERC20Factory", []);
+
+  const ozGovernorFactory = await deployAndVerify("OZGovernorFactory", []);
+  const timelockControllerFactory = await deployAndVerify("TimelockControllerFactory", []);
+  const governorHaus = await deployAndVerify("GovernorHaus", [erc20Factory.address, ozGovernorFactory.address, timelockControllerFactory.address]);
 
   console.log(`GovernorHaus deployed to ${governorHaus.address}`);
 
