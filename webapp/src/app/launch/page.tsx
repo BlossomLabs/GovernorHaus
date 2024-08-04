@@ -10,6 +10,7 @@ import VotingParametersCard from "@/components/form/VotingParametersCard"
 import { baseSepolia } from "viem/chains"
 import { useToast } from "@/components/ui/use-toast"
 import { ONE_DAY } from "@/utils/constants"
+import type { FormValues } from "@/utils/form"
 
 function LaunchPage() {
     const { writeContract } = useWriteContract()
@@ -17,7 +18,7 @@ function LaunchPage() {
     const { address, chain } = useAccount()
     const { toast } = useToast()
 
-    function onSubmit(values: any) {
+    function onSubmit(values: FormValues) {
         console.log(values);
         if (!address) {
             toast({
@@ -50,11 +51,11 @@ function LaunchPage() {
                     governorName: values.governor.name,
                     votingDelay: values.governor.votingDelay * Number(ONE_DAY),
                     votingPeriod: values.governor.votingPeriod * Number(ONE_DAY),
-                    proposalThreshold: parseUnits(values.governor.proposalThreshold, 18),
+                    proposalThreshold: parseUnits(String(values.governor.proposalThreshold), 18),
                     quorumNumerator: BigInt(values.governor.quorumNumerator),
                     voteExtension: values.governor.voteExtension * Number(ONE_DAY),
                     firstMintTo: values.token.tokenholders.map((holder: any) => holder.address),
-                    firstMintAmount: values.token.tokenholders.map((holder: any) => parseUnits(holder.amount, 18)),
+                    firstMintAmount: values.token.tokenholders.map((holder: any) => parseUnits(String(holder.amount), 18)),
                 }
             ],
         }, {
@@ -64,6 +65,7 @@ function LaunchPage() {
                     description: "Your DAO has been created",
                     variant: "default"
                 });
+                console.log(res);
             },
             onError: (err) => {
                 toast({
@@ -71,6 +73,7 @@ function LaunchPage() {
                     description: "There was an error creating your DAO",
                     variant: "destructive"
                 });
+                console.error(err);
             }
         })
     }

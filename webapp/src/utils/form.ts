@@ -3,6 +3,7 @@ import { useForm, UseFormReturn } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 export type Form = UseFormReturn<z.infer<typeof formSchema>>
+export type FormValues = z.infer<typeof formSchema>
 export type FieldName = 
   | "token.symbol"
   | "token.name"
