@@ -20,7 +20,7 @@ const Total = ({ control }: { control: Form["control"] }) => {
 };
 
 function TokenParametersCard({ form }: { form: Form }) {
-  const { fields: tokenholders, append, remove } = useFieldArray({ name: "tokenholders", control: form.control });
+  const { fields: tokenholders, append, remove } = useFieldArray({ name: "token.tokenholders", control: form.control });
 
   return (
     <FormCard title="Token parameters" description="These settings will determine the name and symbol of the token that will be created for your organization. Add members to define the initial distribution of this token.">

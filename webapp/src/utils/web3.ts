@@ -12,7 +12,7 @@ if (!WALLETCONNECT_PROJECT_ID) {
 
 export const WALLETCONNECT_CONFIG = getDefaultConfig({
   appName: SITE_NAME,
-  projectId: WALLETCONNECT_PROJECT_ID,
+  projectId: WALLETCONNECT_PROJECT_ID || 'dummy',
   chains: [optimism, base, optimismSepolia, baseSepolia],
   ssr: true,
 })
