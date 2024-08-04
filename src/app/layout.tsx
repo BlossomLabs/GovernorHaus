@@ -4,6 +4,7 @@ import { PropsWithChildren } from 'react'
 import { SITE_DESCRIPTION, SITE_EMOJI, SITE_INFO, SITE_NAME, SITE_URL, SOCIAL_TWITTER } from '@/utils/site'
 import { Layout } from '@/components/Layout'
 import { Web3Provider } from '@/context/Web3'
+import { Toaster } from '@/components/ui/toaster'
 
 
 export const metadata: Metadata = {
@@ -60,8 +61,10 @@ export default function RootLayout(props: PropsWithChildren) {
       <body>
         <Web3Provider>
           <Layout>{props.children}</Layout>
+          <Toaster />
         </Web3Provider>
       </body>
     </html>
   )
 }
+
