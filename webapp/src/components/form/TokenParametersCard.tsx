@@ -54,11 +54,11 @@ function TokenParametersCard({ form }: { form: Form }) {
       </TableFooter>
     </Table>
 
-      <Button type="button" onClick={() => append({ address: "", amount: 0 })} className="bg-yellow-300 text-yellow-800 py-2 px-4 rounded-md hover:bg-yellow-400">
+      <Button type="button" onClick={() => append({ address: "", amount: 0 })} className="py-2 px-4 rounded-md">
         Add more
       </Button>
       {tokenholders.length > 1 ?
-      <Button type="button" onClick={() => remove(tokenholders.length - 1)} className="bg-yellow-300 text-yellow-800 py-2 px-4 rounded-md hover:bg-yellow-400">
+      <Button type="button" onClick={() => remove(tokenholders.length - 1)} className="py-2 px-4 rounded-md">
         Delete last
       </Button> : null }
       

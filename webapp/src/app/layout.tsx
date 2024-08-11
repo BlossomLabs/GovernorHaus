@@ -5,7 +5,19 @@ import { SITE_DESCRIPTION, SITE_EMOJI, SITE_INFO, SITE_NAME, SITE_URL, SOCIAL_TW
 import { Layout } from '@/components/Layout'
 import { Web3Provider } from '@/context/Web3'
 import { Toaster } from '@/components/ui/toaster'
+import { Manrope } from 'next/font/google'
+import localFont from 'next/font/local'
 
+const headerFont = localFont({
+  src: './fonts/GrishenkoNbpRegular.woff',
+  display: 'swap',
+  variable: '--font-header',
+})
+
+const bodyFont = Manrope({
+  subsets: ['latin'],
+  variable: '--font-body',
+})
 
 export const metadata: Metadata = {
   applicationName: SITE_NAME,
@@ -47,8 +59,6 @@ export const viewport: Viewport = {
 }
 
 export default function RootLayout(props: PropsWithChildren) {
-  // const initialState = cookieToInitialState(WALLETCONNECT_CONFIG, headers().get('cookie'))
-
   return (
     <html lang='en'>
       <head>
@@ -58,7 +68,7 @@ export default function RootLayout(props: PropsWithChildren) {
         />
       </head>
 
-      <body>
+      <body className={`${headerFont.variable} ${bodyFont.variable}`}>
         <Web3Provider>
           <Layout>{props.children}</Layout>
           <Toaster />
