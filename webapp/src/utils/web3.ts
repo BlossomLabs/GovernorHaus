@@ -1,7 +1,7 @@
 'use client'
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
-import { optimism, base, optimismSepolia, baseSepolia } from 'wagmi/chains'
+import { optimism, celo } from 'wagmi/chains'
 import { SITE_NAME } from './site'
 
 
@@ -13,6 +13,6 @@ if (!WALLETCONNECT_PROJECT_ID) {
 export const WALLETCONNECT_CONFIG = getDefaultConfig({
   appName: SITE_NAME,
   projectId: WALLETCONNECT_PROJECT_ID || 'dummy',
-  chains: [optimism, base, optimismSepolia, baseSepolia],
+  chains: [optimism, celo],
   ssr: true,
 })

@@ -5,15 +5,19 @@ async function deployAndVerify(contractName: string, args: any[]) {
   const contract = await viem.deployContract(contractName, args);
   if (process.env.BLOCKSCOUT_KEY) {
     try {
-      await run("verify:verify", {
-        address: contract.address,
-        constructorArguments: args
-      });
+      await Promise.race([
+        run("verify:verify", {
+          address: contract.address,
+          constructorArguments: args
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Verification timed out')), 20000))
+      ]);
     } catch(e: any) {
       if (e.name === 'ContractAlreadyVerifiedError') {
         console.log(`Contract ${contractName} already verified`)
+      } else {
+        console.error(e);
       }
-      console.error(e);
     }
   }
   return contract;

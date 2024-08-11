@@ -1,13 +1,13 @@
 'use client'
-import { useWriteContract, useAccount } from "wagmi"
-import { parseAbi, parseUnits } from "viem"
+import { useWriteContract, useAccount, usePublicClient } from "wagmi"
+import { parseAbi, parseAbiItem, parseEventLogs, parseUnits } from "viem"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import ClaimNameCard from "../../components/form/ClaimNameCard"
 import { useCreateDaoForm } from "../../utils/form"
 import TokenParametersCard from "@/components/form/TokenParametersCard"
 import VotingParametersCard from "@/components/form/VotingParametersCard"
-import { baseSepolia } from "viem/chains"
+import { optimism, celo } from "viem/chains"
 import { useToast } from "@/components/ui/use-toast"
 import { ONE_DAY } from "@/utils/constants"
 import type { FormValues } from "@/utils/form"
@@ -17,6 +17,36 @@ function LaunchPage() {
     const form = useCreateDaoForm()
     const { address, chain } = useAccount()
     const { toast } = useToast()
+    const publicClient = usePublicClient()
+
+    async function processTx(hash: `0x${string}`) {
+        if (!publicClient) return
+
+        const receipt = await publicClient.waitForTransactionReceipt({
+            hash
+        })
+
+        const logs = parseEventLogs({
+            abi: [parseAbiItem("event ContractDeployed(string contractType, address contractAddress)")],
+            logs: receipt.logs,
+        })
+
+        // Type guard to check if log.args has the expected shape
+        function isContractDeployedArgs(args: any): args is { contractType: string; contractAddress: `0x${string}` } {
+            return args && typeof args.contractType === 'string' && typeof args.contractAddress === 'string';
+        }
+
+        const {Token, Governor} = logs
+            .filter(log => log.eventName === 'ContractDeployed')
+            .map(log => log.args)
+            .filter(isContractDeployedArgs)
+            .reduce((acc: { [key: string]: `0x${string}` }, log) => {
+                acc[log.contractType] = log.contractAddress
+                return acc
+            }, {})
+
+        return [Token, Governor]
+    }
 
     function onSubmit(values: FormValues) {
         console.log(values);
@@ -28,19 +58,23 @@ function LaunchPage() {
             });
             return;
         }
-        if (chain?.id !== baseSepolia.id) {
+
+        const contractAddress = chain?.id === celo.id ? `0x40Efd1E776C0D55c251b4B3dE9c5942A4255Bec5` :
+            chain?.id === optimism.id ? `0x3d8ec641793c3f5bde837bda7772ec6a77d1da32` : undefined
+
+        if (!contractAddress) {
             toast({
-                title: "Please connect to Base Sepolia",
-                description: "You need to connect to Base Sepolia to create a DAO",
+                title: "Please connect to the correct network",
+                description: "You need to connect to the correct network to create a DAO",
                 variant: "destructive"
             });
             return;
         }
         writeContract({
-            address: "0x1a184eB4a8299d6CDDc95C34b8aB0916E74c25E3",
+            address: contractAddress,
             abi: parseAbi([
                 "struct DeploymentConfig { string tokenName; string tokenSymbol; uint256 minDelay; string governorName; uint48 votingDelay; uint32 votingPeriod; uint256 proposalThreshold; uint256 quorumNumerator; uint48 voteExtension; address[] firstMintTo; uint256[] firstMintAmount; }",
-                "function createDao(DeploymentConfig memory config)"
+                "function createDao(DeploymentConfig memory config)",
             ]),
             functionName: "createDao",
             args: [
@@ -60,12 +94,27 @@ function LaunchPage() {
             ],
         }, {
             onSuccess: (res) => {
-                toast({
-                    title: "DAO created",
-                    description: "Your DAO has been created",
-                    variant: "default"
-                });
-                console.log(res);
+                processTx(res).then((result) => {
+                    if (!result) {
+                        toast({
+                            title: "Error",
+                            description: "Failed to process transaction logs",
+                            variant: "destructive"
+                        });
+                        return;
+                    }
+                    const [Token, Governor] = result;
+                    toast({
+                        title: "DAO created",
+                        description: <ul>
+                            <li>Your Token has been created at <a className="underline font-bold" target="_blank" href={`${chain?.blockExplorers?.default.url}/token/${Token}`}>{Token}</a></li>
+                            <li>Your DAO has been created at <a className="underline font-bold" target="_blank" href={`${chain?.blockExplorers?.default.url}/address/${Governor}`}>{Governor}</a></li>
+                        </ul>,
+                        variant: "default"
+
+                    });
+                    console.log(res);
+                })
             },
             onError: (err) => {
                 toast({
