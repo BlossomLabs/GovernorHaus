@@ -94,6 +94,7 @@ function LaunchPage() {
             ],
         }, {
             onSuccess: (res) => {
+                const explorerUrl = chain?.id === optimism.id ? "https://optimism.blockscout.com" : "https://explorer.celo.org"
                 processTx(res).then((result) => {
                     if (!result) {
                         toast({
@@ -107,8 +108,8 @@ function LaunchPage() {
                     toast({
                         title: "DAO created",
                         description: <ul>
-                            <li>Your Token has been created at <a className="underline font-bold" target="_blank" href={`${chain?.blockExplorers?.default.url}/token/${Token}`}>{Token}</a></li>
-                            <li>Your DAO has been created at <a className="underline font-bold" target="_blank" href={`${chain?.blockExplorers?.default.url}/address/${Governor}`}>{Governor}</a></li>
+                            <li>Your Token has been created at <a className="underline font-bold" target="_blank" href={`${explorerUrl}/token/${Token}`}>{Token}</a></li>
+                            <li>Your DAO has been created at <a className="underline font-bold" target="_blank" href={`${explorerUrl}/address/${Governor}`}>{Governor}</a></li>
                         </ul>,
                         variant: "default"
 
