@@ -7,6 +7,7 @@ import { Web3Provider } from '@/context/Web3'
 import { Toaster } from '@/components/ui/toaster'
 import { Manrope } from 'next/font/google'
 import localFont from 'next/font/local'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 const headerFont = localFont({
   src: './fonts/GrishenkoNbpRegular.woff',
@@ -70,7 +71,9 @@ export default function RootLayout(props: PropsWithChildren) {
 
       <body className={`${headerFont.variable} ${bodyFont.variable}`}>
         <Web3Provider>
-          <Layout>{props.children}</Layout>
+          <TooltipProvider>
+            <Layout>{props.children}</Layout>
+          </TooltipProvider>
           <Toaster />
         </Web3Provider>
       </body>

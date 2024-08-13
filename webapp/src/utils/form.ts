@@ -21,18 +21,18 @@ export const formSchema = z.object({
   token: z.object({
     name: z.string().min(3).max(20), // Token name
     symbol: z.string().min(2).max(5), // Token symbol
-    tokenholders: z.array(z.object({ address: z.string().length(42), amount: z.number().min(1) })).min(1), // Tokenholders
+    tokenholders: z.array(z.object({ address: z.string().length(42), amount: z.coerce.number().min(1) })).min(1), // Tokenholders
   }),
   timelock: z.object({
-    minDelay: z.number().min(0), // Timelock minimum delay
+    minDelay: z.coerce.number().min(0), // Timelock minimum delay
   }),
   governor: z.object({
     name: z.string().min(3).max(20), // DAO name
-    votingDelay: z.number().min(0).max(100), // Voting delay
-    votingPeriod: z.number().min(0).max(100), // Voting period
-    quorumNumerator: z.number().min(0).max(100), // Quorum numerator
-    proposalThreshold: z.number().min(0).max(100), // Proposal threshold
-    voteExtension: z.number().min(0).max(100), // Vote extension
+    votingDelay: z.coerce.number().min(0).max(100), // Voting delay
+    votingPeriod: z.coerce.number().min(0).max(100), // Voting period
+    quorumNumerator: z.coerce.number().min(0).max(100), // Quorum numerator
+    proposalThreshold: z.coerce.number().min(0).max(100), // Proposal threshold
+    voteExtension: z.coerce.number().min(0).max(100), // Vote extension
   }),
 })
 
