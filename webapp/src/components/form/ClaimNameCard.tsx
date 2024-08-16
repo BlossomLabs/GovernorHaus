@@ -4,8 +4,8 @@ import type { Form } from "../../utils/form"
 
 function ClaimNameCard({ form }: { form: Form }) {
   return (
-    <FormCard title="Claim a name" description="GovernorHaus uses the Ethereum Name Service (ENS) to assign names to organizations.">
-      <Field form={form} name="governor.name" label="DAO name" description="This is your public display name." placeholder="onepiece" />
+    <FormCard title="Profile Info" description="This is the info that will be displayed on the DAO's profile.">
+      <Field form={form} name="governor.name" label="DAO name" description="This is your public name visible to others." placeholder="e.g. One Piece" />
     </FormCard>
   )
 }
