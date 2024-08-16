@@ -1,132 +1,78 @@
 'use client'
 import { useWriteContract, useAccount, usePublicClient } from "wagmi"
-import { parseAbi, parseAbiItem, parseEventLogs, parseUnits } from "viem"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import ClaimNameCard from "../../components/form/ClaimNameCard"
 import { useCreateDaoForm } from "../../utils/form"
 import TokenParametersCard from "@/components/form/TokenParametersCard"
 import VotingParametersCard from "@/components/form/VotingParametersCard"
-import { optimism, celo } from "viem/chains"
+import { optimism } from "viem/chains"
 import { useToast } from "@/components/ui/use-toast"
-import { ONE_DAY } from "@/utils/constants"
 import type { FormValues } from "@/utils/form"
+import { useSignInWithTally, createTallyDao } from "@/utils/tally-api"
+import { processTx, getContractAddress, _login, sendCreateDaoTx } from "@/utils/dao"
+import { PublicClient } from "viem"
+import { loginErrorToast, processTxErrorToast, sendCreateDaoTxErrorToast, walletNotConnectedToast, wrongNetworkToast } from "./toasts"
+import { redirect } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 function LaunchPage() {
     const { writeContract } = useWriteContract()
+    const { signIn } = useSignInWithTally()
     const form = useCreateDaoForm()
     const { address, chain } = useAccount()
     const { toast } = useToast()
-    const publicClient = usePublicClient()
+    const publicClient = usePublicClient() as PublicClient
+    const explorerUrl = chain?.id === optimism.id ? "https://optimism.blockscout.com" : "https://explorer.celo.org"
+    const [redirectUrl, setRedirectUrl] = useState<string | null>(null)
 
-    async function processTx(hash: `0x${string}`) {
-        if (!publicClient) return
-
-        const receipt = await publicClient.waitForTransactionReceipt({
-            hash
-        })
-
-        const logs = parseEventLogs({
-            abi: [parseAbiItem("event ContractDeployed(string contractType, address contractAddress)")],
-            logs: receipt.logs,
-        })
-
-        // Type guard to check if log.args has the expected shape
-        function isContractDeployedArgs(args: any): args is { contractType: string; contractAddress: `0x${string}` } {
-            return args && typeof args.contractType === 'string' && typeof args.contractAddress === 'string';
-        }
-
-        const {Token, Governor} = logs
-            .filter(log => log.eventName === 'ContractDeployed')
-            .map(log => log.args)
-            .filter(isContractDeployedArgs)
-            .reduce((acc: { [key: string]: `0x${string}` }, log) => {
-                acc[log.contractType] = log.contractAddress
-                return acc
-            }, {})
-
-        return [Token, Governor]
-    }
-
-    function onSubmit(values: FormValues) {
+    async function onSubmit(values: FormValues) {
         console.log(values);
-        if (!address) {
-            toast({
-                title: "Please connect your wallet",
-                description: "You need to connect your wallet to create a DAO",
-                variant: "destructive"
-            });
-            return;
+        if (!address || !chain) {
+            walletNotConnectedToast(toast)
+            return
         }
-
-        const contractAddress = chain?.id === celo.id ? `0x40Efd1E776C0D55c251b4B3dE9c5942A4255Bec5` :
-            chain?.id === optimism.id ? `0x3d8ec641793c3f5bde837bda7772ec6a77d1da32` : undefined
-
+        const contractAddress = getContractAddress(chain)
         if (!contractAddress) {
-            toast({
-                title: "Please connect to the correct network",
-                description: "You need to connect to the correct network to create a DAO",
-                variant: "destructive"
-            });
+            wrongNetworkToast(toast)
+            return
+        }
+        const login = await _login(signIn)
+        if (!login) {
+            loginErrorToast(toast)
+            return
+        }
+        let res
+        try {
+            res = await sendCreateDaoTx(writeContract, contractAddress, values)
+        } catch (error) {
+            sendCreateDaoTxErrorToast(toast)
+            return
+        }
+
+        const result = await processTx(res, publicClient)
+        if (!result) {
+            processTxErrorToast(toast)
             return;
         }
-        writeContract({
-            address: contractAddress,
-            abi: parseAbi([
-                "struct DeploymentConfig { string tokenName; string tokenSymbol; uint256 minDelay; string governorName; uint48 votingDelay; uint32 votingPeriod; uint256 proposalThreshold; uint256 quorumNumerator; uint48 voteExtension; address[] firstMintTo; uint256[] firstMintAmount; }",
-                "function createDao(DeploymentConfig memory config)",
-            ]),
-            functionName: "createDao",
-            args: [
-                {
-                    tokenName: values.token.name,
-                    tokenSymbol: values.token.symbol,
-                    minDelay: BigInt(values.timelock.minDelay) * ONE_DAY,
-                    governorName: values.governor.name,
-                    votingDelay: values.governor.votingDelay * Number(ONE_DAY),
-                    votingPeriod: values.governor.votingPeriod * Number(ONE_DAY),
-                    proposalThreshold: parseUnits(String(values.governor.proposalThreshold), 18),
-                    quorumNumerator: BigInt(values.governor.quorumNumerator),
-                    voteExtension: values.governor.voteExtension * Number(ONE_DAY),
-                    firstMintTo: values.token.tokenholders.map((holder: any) => holder.address),
-                    firstMintAmount: values.token.tokenholders.map((holder: any) => parseUnits(String(holder.amount), 18)),
-                }
-            ],
-        }, {
-            onSuccess: (res) => {
-                const explorerUrl = chain?.id === optimism.id ? "https://optimism.blockscout.com" : "https://explorer.celo.org"
-                processTx(res).then((result) => {
-                    if (!result) {
-                        toast({
-                            title: "Error",
-                            description: "Failed to process transaction logs",
-                            variant: "destructive"
-                        });
-                        return;
-                    }
-                    const [Token, Governor] = result;
-                    toast({
-                        title: "DAO created",
-                        description: <ul>
-                            <li>Your Token has been created at <a className="underline font-bold" target="_blank" href={`${explorerUrl}/token/${Token}`}>{Token}</a></li>
-                            <li>Your DAO has been created at <a className="underline font-bold" target="_blank" href={`${explorerUrl}/address/${Governor}`}>{Governor}</a></li>
-                        </ul>,
-                        variant: "default"
-
-                    });
-                    console.log(res);
-                })
-            },
-            onError: (err) => {
-                toast({
-                    title: "Error",
-                    description: "There was an error creating your DAO",
-                    variant: "destructive"
-                });
-                console.error(err);
-            }
-        })
+        const { tokenAddress, governorAddress, blockNumber } = result;
+        toast({
+            title: "DAO created",
+            description: <ul>
+                <li>Your Token has been created at <a className="underline font-bold" target="_blank" href={`${explorerUrl}/token/${tokenAddress}`}>{tokenAddress}</a></li>
+                <li>Your DAO has been created at <a className="underline font-bold" target="_blank" href={`${explorerUrl}/address/${governorAddress}`}>{governorAddress}</a></li>
+            </ul>,
+            variant: "default"
+        });
+        const url = await createTallyDao(values.governor.name, tokenAddress, governorAddress, chain.id, blockNumber, login)
+        setRedirectUrl(url)
     }
+
+    useEffect(() => {
+        if (redirectUrl) {
+            window.open(redirectUrl, "_blank")
+        }
+    }, [redirectUrl])
 
     return (
         <Form {...form}>
