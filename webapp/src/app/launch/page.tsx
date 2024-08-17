@@ -78,17 +78,21 @@ function LaunchPage() {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="hidden">{JSON.stringify(form.formState.errors)}</div> {/* FIXME: If this is removed, the form will not re-render the errors */}
-                <div className="p-10 rounded-md">
-                    <h2 className="font-header text-3xl font-bold mb-2">Create your organization</h2>
-                    <p className="text-gray-700 mb-6">
-                        Name and define your DAO parameters so grantees know they are joining the right organization.
-                    </p>
+                <div className="px-10 py-2 sm:py-10 rounded-md">
+                    <div className="pl-3 pr-3">
+                        <h2 className="font-header text-3xl font-bold mb-2">Create your organization</h2>
+                        <p className="text-gray-700 mb-6">
+                            This form creates an OpenZeppelin Token and Governor, and registers the DAO on Tally for easy management.
+                        </p>
+                    </div>
                     <ClaimNameCard form={form} />
                     <TokenParametersCard form={form} />
                     <VotingParametersCard form={form} />
-                    <Button type="submit" className="py-3 px-6 rounded-md">
-                        Create DAO
-                    </Button>
+                    <div className="flex justify-center">
+                        <Button type="submit" className="py-3 px-6 rounded-md w-full md:w-auto" size="xl">
+                            Create DAO
+                        </Button>
+                    </div>
                 </div>
             </form>
         </Form>
