@@ -21,7 +21,10 @@ export const formSchema = z.object({
   token: z.object({
     name: z.string().min(3).max(20), // Token name
     symbol: z.string().min(2).max(5), // Token symbol
-    tokenholders: z.array(z.object({ address: z.string().length(42), amount: z.coerce.number().min(1) })).min(1), // Tokenholders
+    tokenholders: z.array(z.object({ // Tokenholders
+      address: z.string().startsWith("0x").length(42).or(z.string().endsWith(".eth")), // Address or ENS name
+      amount: z.coerce.number().min(1) // Amount of tokens
+    })).min(1),
   }),
   timelock: z.object({
     minDelay: z.coerce.number().min(0), // Timelock minimum delay

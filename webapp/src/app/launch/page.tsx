@@ -13,7 +13,6 @@ import { useSignInWithTally, createTallyDao } from "@/utils/tally-api"
 import { processTx, getContractAddress, _login, sendCreateDaoTx } from "@/utils/dao"
 import { PublicClient } from "viem"
 import { loginErrorToast, processTxErrorToast, sendCreateDaoTxErrorToast, walletNotConnectedToast, wrongNetworkToast } from "./toasts"
-import { redirect } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
 function LaunchPage() {
@@ -46,6 +45,7 @@ function LaunchPage() {
         try {
             res = await sendCreateDaoTx(writeContract, contractAddress, values)
         } catch (error) {
+            console.error(error)
             sendCreateDaoTxErrorToast(toast)
             return
         }
@@ -76,10 +76,10 @@ function LaunchPage() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="py-10">
                 <div className="hidden">{JSON.stringify(form.formState.errors)}</div> {/* FIXME: If this is removed, the form will not re-render the errors */}
-                <div className="px-10 py-2 sm:py-10 rounded-md">
-                    <div className="pl-3 pr-3">
+                <div className="max-w-xl mx-auto">
+                    <div className="px-3">
                         <h2 className="font-header text-3xl font-bold mb-2">Create your organization</h2>
                         <p className="text-gray-700 mb-6">
                             This form creates an OpenZeppelin Token and Governor, and registers the DAO on Tally for easy management.

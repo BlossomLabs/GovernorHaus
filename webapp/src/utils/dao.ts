@@ -1,7 +1,8 @@
-import { PublicClient, parseAbi, parseAbiItem, parseEventLogs, parseUnits } from "viem"
-import { optimism, celo } from "viem/chains"
+import { PublicClient, createPublicClient, http, isAddress, parseAbi, parseAbiItem, parseEventLogs, parseUnits } from "viem"
+import { optimism, celo, mainnet } from "viem/chains"
 import { ONE_DAY } from "@/utils/constants"
 import type { FormValues } from "@/utils/form"
+import { publicClient } from "@/utils/web3"
 
 export async function processTx(hash: `0x${string}`, publicClient: PublicClient) {
     if (!publicClient) return
@@ -45,7 +46,14 @@ export async function _login(signIn: any) {
 }
 
 export async function sendCreateDaoTx(writeContract: any, contractAddress: `0x${string}`, values: FormValues) {
-    return new Promise<`0x${string}`>((resolve, reject) => {
+    async function getTokenHolderAddresses(tokenholders: { address: string }[]): Promise<`0x${string}`[]> {
+        return Promise.all(
+            tokenholders.map(
+                (holder: any) => isAddress(holder.address) ? holder.address : publicClient.getEnsAddress({name: holder.address})
+            )
+        )
+    }
+    return new Promise<`0x${string}`>(async (resolve, reject) => {
         writeContract({
             address: contractAddress,
             abi: parseAbi([
@@ -64,7 +72,7 @@ export async function sendCreateDaoTx(writeContract: any, contractAddress: `0x${
                     proposalThreshold: parseUnits(String(values.governor.proposalThreshold), 18),
                     quorumNumerator: BigInt(values.governor.quorumNumerator),
                     voteExtension: values.governor.voteExtension * Number(ONE_DAY),
-                    firstMintTo: values.token.tokenholders.map((holder: any) => holder.address),
+                    firstMintTo: await getTokenHolderAddresses(values.token.tokenholders),
                     firstMintAmount: values.token.tokenholders.map((holder: any) => parseUnits(String(holder.amount), 18)),
                 }
             ],

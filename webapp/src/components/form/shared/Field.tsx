@@ -4,12 +4,8 @@ import { Input } from "@/components/ui/input"
 import type { Form, FieldName } from "../../../utils/form"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useState } from "react"
-import makeBlockie from "ethereum-blockies-base64";
-import Image from "next/image"
-import { isAddress } from "viem"
 import { cn } from "@/utils/shadcn"
-
-const transparentPixel = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+import AddressAvatar from "./AddressAvatar"
 
 function FieldTitle({ label, description }: { label: string, description: string }) {
     const [open, setOpen] = useState(false);
@@ -55,7 +51,7 @@ function Field({ form, name, label, description, placeholder, type = "text", cla
                         <Input
                             type={type}
                             leftElement={isAddressField && 
-                                <Image src={isAddress(String(field.value)) ? makeBlockie(String(field.value)) : transparentPixel} alt="" width={20} height={20} className="rounded bg-gray-300" /> }
+                                <AddressAvatar addressOrEns={String(field.value)} /> }
                             className="w-full border border-gray-300 rounded-md mb-2"
                             placeholder={placeholder}
                             {...field}
