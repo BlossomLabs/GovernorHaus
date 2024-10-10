@@ -1,4 +1,3 @@
-"use client";
 import TokenParametersCard from "@/components/form/TokenParametersCard";
 import VotingParametersCard from "@/components/form/VotingParametersCard";
 import {
@@ -16,15 +15,15 @@ import { useEffect, useState } from "react";
 import type { PublicClient } from "viem";
 import { optimism } from "viem/chains";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
-import ClaimNameCard from "../../components/form/ClaimNameCard";
-import { useCreateDaoForm } from "../../utils/form";
+import ClaimNameCard from "../components/form/ClaimNameCard";
+import { useCreateDaoForm } from "../utils/form";
 import {
   loginErrorToast,
   processTxErrorToast,
   sendCreateDaoTxErrorToast,
   walletNotConnectedToast,
   wrongNetworkToast,
-} from "./toasts";
+} from "../utils/toasts";
 
 function LaunchPage() {
   const { writeContract } = useWriteContract();

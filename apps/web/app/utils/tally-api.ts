@@ -1,9 +1,13 @@
 import { createSiweMessage } from "viem/siwe";
 import { useAccount, useSignMessage } from "wagmi";
 
+const TALLY_API_KEY = import.meta.env.VITE_TALLY_API_KEY;
+if (!TALLY_API_KEY) {
+  console.warn("You need to provide a VITE_TALLY_API_KEY env variable");
+}
+
 async function fetchTallyNonce(address: `0x${string}`, chainId: number) {
-  const apiKey = process.env.NEXT_PUBLIC_TALLY_API_KEY;
-  if (!apiKey) {
+  if (!TALLY_API_KEY) {
     throw new Error("API key is not defined");
   }
   try {
@@ -11,7 +15,7 @@ async function fetchTallyNonce(address: `0x${string}`, chainId: number) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Api-Key": apiKey,
+        "Api-Key": TALLY_API_KEY,
       },
       body: JSON.stringify({
         query:
@@ -50,8 +54,7 @@ async function tallyLogin(
   signature: string,
   nonceToken: string,
 ) {
-  const apiKey = process.env.NEXT_PUBLIC_TALLY_API_KEY;
-  if (!apiKey) {
+  if (!TALLY_API_KEY) {
     throw new Error("API key is not defined");
   }
   try {
@@ -59,7 +62,7 @@ async function tallyLogin(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Api-Key": apiKey,
+        "Api-Key": TALLY_API_KEY,
         nonce: nonceToken,
       },
       body: JSON.stringify({
@@ -121,8 +124,7 @@ export async function createTallyDao(
   txBlock: number,
   login: string,
 ) {
-  const apiKey = process.env.NEXT_PUBLIC_TALLY_API_KEY;
-  if (!apiKey) {
+  if (!TALLY_API_KEY) {
     throw new Error("API key is not defined");
   }
   try {
@@ -130,7 +132,7 @@ export async function createTallyDao(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Api-Key": apiKey,
+        "Api-Key": TALLY_API_KEY,
         Authorization: `Bearer ${login}`,
       },
       body: JSON.stringify({

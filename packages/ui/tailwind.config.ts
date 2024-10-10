@@ -1,6 +1,5 @@
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
-import colors from "tailwindcss/colors";
 
 const config = {
   darkMode: ["class"],
@@ -20,11 +19,12 @@ const config = {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      body: ["var(--font-body)"],
+      sans: ["var(--font-body)"],
+      header: ["var(--font-header)"],
+    },
     extend: {
-      fontFamily: {
-        DEFAULT: ["var(--font-body)"],
-        header: ["var(--font-header)"],
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

@@ -1,7 +1,6 @@
 import { mainnetConfig } from "@/utils/web3";
 import { cn } from "@repo/ui/lib/utils";
 import makeBlockie from "ethereum-blockies-base64";
-import Image from "next/image";
 import { useMemo } from "react";
 import { isAddress } from "viem";
 import { normalize } from "viem/ens";
@@ -39,7 +38,7 @@ function AddressAvatar({ addressOrEns }: { addressOrEns: string }) {
   }, [ensAvatar, address, isLoading]);
 
   return (
-    <Image
+    <img
       src={src}
       alt=""
       width={20}

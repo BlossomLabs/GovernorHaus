@@ -1,6 +1,22 @@
+@import '@fontsource/manrope/latin.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'Grishenko NBP';
+    src: url('/fonts/GrishenkoNbp/GrishenkoNbpRegular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  :root {
+    --font-header: 'Grishenko NBP', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+  }
+}
 
 
 @layer base {
@@ -82,3 +98,4 @@
     appearance: textfield;
   }
 }
+
