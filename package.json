@@ -1,0 +1,28 @@
+{
+  "name": "governorhaus",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "test": "turbo test",
+    "test:coverage": "turbo test:coverage",
+    "format-and-lint": "biome check .",
+    "format-and-lint:fix": "biome check . --write",
+    "ui": "bun run --cwd packages/ui ui",
+    "prepare": "husky",
+    "install:web": "bun run --cwd apps/web install",
+    "install:contracts": "bun run --cwd contracts/governorhaus install"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "husky": "^9.1.5",
+    "turbo": "^2.1.1",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.1.4",
+  "workspaces": ["apps/*", "contracts/*", "packages/*"],
+  "license": "AGPL-3.0-or-later"
+}
