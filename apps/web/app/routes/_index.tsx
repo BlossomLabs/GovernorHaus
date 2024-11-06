@@ -15,7 +15,11 @@ export default function Home() {
     <div className="font-sans grid grid-rows-[10px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div className="flex justify-center w-full mt-[-100px]">
-          <img src="/images/gov.jpeg" alt="Governor" width="300" height="207" />
+          <img
+            src="/images/governor.webp"
+            alt="Governor"
+            style={{ height: "300px" }}
+          />
         </div>
         <h1 className="font-header text-4xl font-bold text-center">
           Welcome to the future of work
