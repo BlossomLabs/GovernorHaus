@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Governor Haus" },
+    { title: "GovernorHaus" },
     { name: "description", content: "Welcome to the future of work" },
   ];
 };
