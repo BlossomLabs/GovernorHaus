@@ -16,30 +16,35 @@ function VotingParametersCard({ form }: { form: Form }) {
         description="The minimum percentage of votes required to pass a proposal."
         placeholder="4"
       />
-      <Field
-        form={form}
-        type="number"
-        name="governor.votingDelay"
-        label="Voting delay"
-        description="The delay before voting starts."
-        placeholder="1"
-      />
-      <Field
-        form={form}
-        type="number"
-        name="governor.votingPeriod"
-        label="Voting period"
-        description="The duration of the voting period."
-        placeholder="5"
-      />
-      <Field
-        form={form}
-        type="number"
-        name="timelock.minDelay"
-        label="Timelock delay"
-        description="The delay before the proposal can be executed."
-        placeholder="1"
-      />
+      <div className="flex flex-row gap-4 w-full">
+        <Field
+          form={form}
+          type="number"
+          name="governor.votingDelay"
+          label="Voting delay"
+          description="The delay before voting starts."
+          placeholder="1"
+          className="w-1/3"
+        />
+        <Field
+          form={form}
+          type="number"
+          name="governor.votingPeriod"
+          label="Voting period"
+          description="The duration of the voting period."
+          placeholder="5"
+          className="w-1/3"
+        />
+        <Field
+          form={form}
+          type="number"
+          name="timelock.minDelay"
+          label="Timelock delay"
+          description="The delay before the proposal can be executed."
+          placeholder="1"
+          className="w-1/3"
+        />
+      </div>
     </FormCard>
   );
 }

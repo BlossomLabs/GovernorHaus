@@ -24,20 +24,24 @@ function TokenParametersCard({ form }: { form: Form }) {
       title="Token parameters"
       description="These settings will determine the name and symbol of the token that will be created for your organization. Add members to define the initial distribution of this token."
     >
-      <Field
-        form={form}
-        name="token.name"
-        label="Token name"
-        description="The name of the token."
-        placeholder="e.g. OnePiece"
-      />
-      <Field
-        form={form}
-        name="token.symbol"
-        label="Token symbol"
-        description="The symbol of the token."
-        placeholder="e.g. ONE"
-      />
+      <div className="flex flex-row gap-4 w-full">
+        <Field
+          form={form}
+          name="token.name"
+          label="Token name"
+          description="The name of the token."
+          placeholder="e.g. OnePiece"
+          className="w-2/3"
+        />
+        <Field
+          form={form}
+          name="token.symbol"
+          label="Token symbol"
+          description="The symbol of the token."
+          placeholder="e.g. ONE"
+          className="w-1/3"
+        />
+      </div>
       <MultiField
         form={form}
         name="token.tokenholders"

@@ -121,8 +121,8 @@ function LaunchPage() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="py-10">
         <div className="hidden">{JSON.stringify(form.formState.errors)}</div>{" "}
         {/* FIXME: If this is removed, the form will not re-render the errors */}
-        <div className="max-w-xl mx-auto">
-          <div className="px-3">
+        <div className="max-w-xl mx-auto px-3">
+          <div className="mb-6">
             <h2 className="font-header text-3xl font-bold mb-2">
               Create your organization
             </h2>

@@ -4,7 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+/* *=========== Default theme =========== */
+ @layer base {
+
   @font-face {
     font-family: 'Grishenko NBP';
     src: url('/fonts/GrishenkoNbp/GrishenkoNbpRegular.woff') format('woff');
@@ -13,14 +15,8 @@
   }
 
   :root {
-    --font-header: 'Grishenko NBP', sans-serif;
+    --font-heading: 'Grishenko NBP', sans-serif;
     --font-body: 'Manrope', sans-serif;
-  }
-}
-
-
-@layer base {
-  :root {
     --background: 251.4 91.3% 95.5%;
     --foreground: 263.5 67.4% 34.9%;
     --card: 251.4 91.3% 95.5%;
@@ -75,14 +71,20 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-}
+} 
 
 @layer base {
   * {
     @apply border-border;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body);
   }
 }
 
@@ -96,6 +98,6 @@
   .input-number-hide-arrows {
     -moz-appearance: textfield;
     appearance: textfield;
-  }
+  }  
 }
 
