@@ -12,7 +12,7 @@ import {
 import { csvStringToArray } from "@/utils/csv";
 import { PlusCircledIcon, TrashIcon } from "@radix-ui/react-icons";
 import { cn } from "@repo/ui/lib/utils";
-import { useFieldArray } from "react-hook-form";
+import { useFieldArray, useWatch } from "react-hook-form";
 import type { Form } from "../../../utils/form";
 import Field from "./Field";
 
@@ -25,11 +25,11 @@ type MultiFieldProps = {
     name: "address" | "amount";
     label: string;
     description: string;
-    placeholder: string;
+    placeholder?: string;
     type: "text" | "number" | "address";
     className?: string;
   }[];
-  footer: React.ReactNode;
+  footer: (string | ((formValues: any) => string))[];
 };
 
 function MultiField({
@@ -46,6 +46,11 @@ function MultiField({
     remove,
     insert,
   } = useFieldArray({ name, control: form.control });
+
+  const formValues = useWatch({
+    name: "token.tokenholders",
+    control: form.control,
+  });
 
   const handlePaste = (index: number) => (pasted: string, e: Event) => {
     const csv = csvStringToArray(pasted);
@@ -67,11 +72,7 @@ function MultiField({
         <TableHeader>
           <TableRow>
             {fields.map((field) => (
-              <TableHead
-                key={field.name}
-                colSpan={3}
-                className={field.className}
-              >
+              <TableHead key={field.name} className={field.className}>
                 {field.label}
               </TableHead>
             ))}
@@ -83,7 +84,6 @@ function MultiField({
               {fields.map((field) => (
                 <TableCell
                   key={field.name}
-                  colSpan={3}
                   className={cn("font-medium", field.className)}
                 >
                   <Field
@@ -101,7 +101,20 @@ function MultiField({
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>{footer}</TableFooter>
+        {footer && (
+          <TableFooter>
+            <TableRow>
+              {footer.map((item: any, i: number) => (
+                <TableCell
+                  key={item.toString()}
+                  className={cn("px-6 py-4", fields[i].className)}
+                >
+                  {typeof item === "function" ? item(formValues) : item}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableFooter>
+        )}
       </Table>
 
       <div className="flex flex-col min-[400px]:flex-row items-center mt-5">

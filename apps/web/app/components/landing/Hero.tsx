@@ -10,7 +10,7 @@ export const Hero = () => {
           <h1>Launch Your DAO</h1> in Minutes{" "}
           <h2 className="inline">
             with{" "}
-            <span className="inline bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-transparent bg-clip-text">
+            <span className="inline bg-gradient-to-r from-teal-500 via-teal-300 to-teal-400 text-transparent bg-clip-text">
               GovernorHaus
             </span>
           </h2>

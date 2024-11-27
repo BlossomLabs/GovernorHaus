@@ -55,7 +55,7 @@ type FieldProps = {
   name: FieldName;
   label: string;
   description: string;
-  placeholder: string;
+  placeholder?: string;
   type?: "text" | "number" | "address";
   className?: string;
   onPaste?: (text: string, e: any) => void;
@@ -66,7 +66,7 @@ function Field({
   name,
   label,
   description,
-  placeholder,
+  placeholder = "",
   type = "text",
   className,
   onPaste,
