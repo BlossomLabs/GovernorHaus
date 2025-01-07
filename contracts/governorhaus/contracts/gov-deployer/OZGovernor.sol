@@ -16,7 +16,7 @@ import "@openzeppelin/contracts/governance/extensions/GovernorPreventLateQuorum.
  * @dev OZGovernor is a smart contract that extends OpenZeppelin's Governor with additional features
  * for voting, timelock, and quorum.
  */
-contract OZGovernor is Governor, GovernorSettings, GovernorCountingSimple, GovernorStorage, GovernorVotes,GovernorPreventLateQuorum, GovernorVotesQuorumFraction, GovernorTimelockControl {
+contract OZGovernor is Governor, GovernorSettings, GovernorCountingSimple, GovernorStorage, GovernorVotes, GovernorPreventLateQuorum, GovernorVotesQuorumFraction, GovernorTimelockControl {
     
     /**
      * @dev Initializes the OZGovernor contract.
