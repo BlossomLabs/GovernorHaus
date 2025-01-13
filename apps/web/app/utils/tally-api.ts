@@ -36,7 +36,7 @@ async function fetchTallyNonce(address: `0x${string}`, chainId: number) {
         "Sign in with Ethereum to Tally and agree to the Terms of Service at terms.tally.xyz",
       uri: "https://www.tally.xyz/",
       version: "1",
-      chainId,
+      chainId: 1,
       nonce,
     });
     // remove last line (bad Issued At)
@@ -67,10 +67,11 @@ async function tallyLogin(
       },
       body: JSON.stringify({
         query:
-          "\n    mutation Login($message: String!, $signature: String!) {\n  login(message: $message, signature: $signature)\n}\n    ",
+          "mutation Login($message: String!, $signature: String!, $signInType: SignInType!) { login(message: $message, signature: $signature, signInType: $signInType) }",
         variables: {
           message: siweMessage,
           signature: signature,
+          signInType: "evm",
         },
       }),
     });
@@ -137,7 +138,7 @@ export async function createTallyDao(
       },
       body: JSON.stringify({
         query:
-          "\n    mutation CreateDAO($input: CreateDAOInput!) {\n  createDAO(input: $input) {\n    id\n    slug\n  }\n}\n    ",
+          "mutation CreateDAO($input: CreateOrganizationInput!) { createOrganization(input: $input) { id slug } }",
         variables: {
           input: {
             governors: [
@@ -166,7 +167,7 @@ export async function createTallyDao(
     if (res.error) {
       throw new Error(res.error);
     }
-    return `https://www.tally.xyz/gov/${res.data.createDAO.slug}`;
+    return `https://www.tally.xyz/gov/${res.data.createOrganization.slug}`;
   } catch (error) {
     console.error("Error posting to external API:", error);
     throw error;
