@@ -9,9 +9,7 @@ import type { FormValues } from "@/utils/form";
 import { createTallyDao, useSignInWithTally } from "@/utils/tally-api";
 import { Button } from "@repo/ui/components/ui/button";
 import { useToast } from "@repo/ui/hooks/use-toast";
-import { useEffect, useState } from "react";
 import type { PublicClient } from "viem";
-import { optimism } from "viem/chains";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 
 import {
@@ -28,11 +26,7 @@ function LaunchPage() {
   const { address, chain } = useAccount();
   const { toast } = useToast();
   const publicClient = usePublicClient() as PublicClient;
-  const explorerUrl =
-    chain?.id === optimism.id
-      ? "https://optimism.blockscout.com"
-      : "https://explorer.celo.org";
-  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+  const explorerUrl = chain?.blockExplorers?.default?.url;
 
   async function onSubmit(values: FormValues) {
     console.log(values);
@@ -65,6 +59,16 @@ function LaunchPage() {
       return;
     }
     const { tokenAddress, governorAddress, blockNumber } = result;
+
+    const url = await createTallyDao(
+      values.governor.name,
+      tokenAddress,
+      governorAddress,
+      chain.id,
+      blockNumber,
+      login,
+    );
+
     toast({
       title: "DAO created",
       description: (
@@ -91,26 +95,22 @@ function LaunchPage() {
               {governorAddress}
             </a>
           </li>
+          <li>
+            Open the DAO on Tally at{" "}
+            <a
+              className="underline font-bold"
+              target="_blank"
+              href={url}
+              rel="noreferrer"
+            >
+              {url}
+            </a>
+          </li>
         </ul>
       ),
-      variant: "default",
+      duration: 30000,
     });
-    const url = await createTallyDao(
-      values.governor.name,
-      tokenAddress,
-      governorAddress,
-      chain.id,
-      blockNumber,
-      login,
-    );
-    setRedirectUrl(url);
   }
-
-  useEffect(() => {
-    if (redirectUrl) {
-      window.open(redirectUrl, "_blank");
-    }
-  }, [redirectUrl]);
 
   const formParams: FormParams = [
     {

@@ -2,14 +2,16 @@ import { ONE_DAY } from "@/utils/constants";
 import type { FormValues } from "@/utils/form";
 import { publicClient } from "@/utils/web3";
 import {
+  type Chain,
   type PublicClient,
+  getAddress,
   isAddress,
   parseAbi,
   parseAbiItem,
   parseEventLogs,
   parseUnits,
 } from "viem";
-import { celo, optimism } from "viem/chains";
+import { deployedAddresses } from "./deployed";
 
 export async function processTx(
   hash: `0x${string}`,
@@ -54,14 +56,13 @@ export async function processTx(
   };
 }
 
-export function getContractAddress(chain: any) {
-  const contractAddress =
-    chain?.id === celo.id
-      ? "0x40Efd1E776C0D55c251b4B3dE9c5942A4255Bec5"
-      : chain?.id === optimism.id
-        ? "0x3d8ec641793c3f5bde837bda7772ec6a77d1da32"
-        : undefined;
-  return contractAddress;
+export function getContractAddress(chain: Chain): `0x${string}` | undefined {
+  const address =
+    deployedAddresses[chain.id as keyof typeof deployedAddresses]?.[
+      "GovernorHaus#GovernorHaus"
+    ];
+  if (!address) return;
+  return getAddress(address);
 }
 
 export async function _login(signIn: any) {
