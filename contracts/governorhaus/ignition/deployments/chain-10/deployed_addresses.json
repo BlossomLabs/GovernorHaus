@@ -1,0 +1,9 @@
+{
+  "GovernorHaus#ERC20Factory": "0x29aceD1a4253da10D9dA391103Da69753f38519D",
+  "GovernorHaus#OZGovernorFactory": "0x87aE1e56791ca7DBF4905753B93641E819aaaD7d",
+  "GovernorHaus#TimelockControllerFactory": "0x6Fa8D282C8e812cE255a4ACda4403c760526aD1C",
+  "GovernorHaus#GovernorHaus": "0xfbe5b3b1AE4866CE6F8D62B19b35F524D173267F",
+  "GovernorHaus#ERC20Token": "0x6A862DaBcf717048817AE1cefb1E8001F767bcE0",
+  "GovernorHaus#OZGovernor": "0xCf4202835f8873d76Ca7221FD5F39fF6006d933c",
+  "GovernorHaus#TimelockController": "0x13Fda21698Cd81BC24e62bdc3D8388E9e86ADE92"
+}

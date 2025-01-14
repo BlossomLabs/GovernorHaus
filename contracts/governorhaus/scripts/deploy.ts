@@ -31,64 +31,66 @@ async function main() {
 
   const erc20Factory = await deployAndVerify("ERC20Factory", []);
 
-  const ozGovernorFactory = await deployAndVerify("OZGovernorFactory", []);
-  const timelockControllerFactory = await deployAndVerify(
-    "TimelockControllerFactory",
-    [],
-  );
-  const governorHaus = await deployAndVerify("GovernorHaus", [
-    erc20Factory.address,
-    ozGovernorFactory.address,
-    timelockControllerFactory.address,
-  ]);
+  console.log(`ERC20Factory deployed to ${erc20Factory.address}`);
 
-  console.log(`GovernorHaus deployed to ${governorHaus.address}`);
+  // const ozGovernorFactory = await deployAndVerify("OZGovernorFactory", []);
+  // const timelockControllerFactory = await deployAndVerify(
+  //   "TimelockControllerFactory",
+  //   [],
+  // );
+  // const governorHaus = await deployAndVerify("GovernorHaus", [
+  //   erc20Factory.address,
+  //   ozGovernorFactory.address,
+  //   timelockControllerFactory.address,
+  // ]);
 
-  const hash = await governorHaus.write.createDao([
-    {
-      tokenName: "HausDAO",
-      tokenSymbol: "HAUS",
-      minDelay: BigInt(1 * 24 * 60 * 60),
-      governorName: "HausDAO",
-      votingDelay: 1,
-      votingPeriod: 43200,
-      proposalThreshold: 1000000000000000000000000n,
-      quorumNumerator: 4n,
-      voteExtension: 0,
-      firstMintAmount: [1000000000000000000000000n],
-      firstMintTo: [wallet.account.address],
-    },
-  ]);
+  // console.log(`GovernorHaus deployed to ${governorHaus.address}`);
 
-  const receipt = await publicClient.getTransactionReceipt({
-    hash,
-  });
+  // const hash = await governorHaus.write.createDao([
+  //   {
+  //     tokenName: "HausDAO",
+  //     tokenSymbol: "HAUS",
+  //     minDelay: BigInt(1 * 24 * 60 * 60),
+  //     governorName: "HausDAO",
+  //     votingDelay: 1,
+  //     votingPeriod: 43200,
+  //     proposalThreshold: 1000000000000000000000000n,
+  //     quorumNumerator: 4n,
+  //     voteExtension: 0,
+  //     firstMintAmount: [1000000000000000000000000n],
+  //     firstMintTo: [wallet.account.address],
+  //   },
+  // ]);
 
-  const logs = parseEventLogs({
-    abi: governorHaus.abi,
-    logs: receipt.logs,
-  });
+  // const receipt = await publicClient.getTransactionReceipt({
+  //   hash,
+  // });
 
-  // Type guard to check if log.args has the expected shape
-  function isContractDeployedArgs(
-    args: any,
-  ): args is { contractType: string; contractAddress: `0x${string}` } {
-    return (
-      args &&
-      typeof args.contractType === "string" &&
-      typeof args.contractAddress === "string"
-    );
-  }
+  // const logs = parseEventLogs({
+  //   abi: governorHaus.abi,
+  //   logs: receipt.logs,
+  // });
 
-  logs
-    .filter((log) => log.eventName === "ContractDeployed")
-    .map((log) => log.args)
-    .filter(isContractDeployedArgs)
-    .map(
-      ({ contractType, contractAddress }) =>
-        `${contractType} deployed to ${contractAddress}`,
-    )
-    .map((s) => console.log(s));
+  // // Type guard to check if log.args has the expected shape
+  // function isContractDeployedArgs(
+  //   args: any,
+  // ): args is { contractType: string; contractAddress: `0x${string}` } {
+  //   return (
+  //     args &&
+  //     typeof args.contractType === "string" &&
+  //     typeof args.contractAddress === "string"
+  //   );
+  // }
+
+  // logs
+  //   .filter((log) => log.eventName === "ContractDeployed")
+  //   .map((log) => log.args)
+  //   .filter(isContractDeployedArgs)
+  //   .map(
+  //     ({ contractType, contractAddress }) =>
+  //       `${contractType} deployed to ${contractAddress}`,
+  //   )
+  //   .map((s) => console.log(s));
 }
 
 // We recommend this pattern to be able to use async/await everywhere

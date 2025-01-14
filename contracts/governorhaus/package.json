@@ -1,10 +1,18 @@
 {
   "name": "hardhat-project",
   "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^0.15.9",
+    "@nomicfoundation/hardhat-ignition-viem": "^0.15.9",
     "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
     "hardhat": "^2.22.7"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2"
+  },
+  "scripts": {
+    "deploy:optimism": "hardhat ignition deploy ignition/modules/GovernorHaus.ts --network optimism --strategy create2 --verify",
+    "deploy:celo": "hardhat ignition deploy ignition/modules/GovernorHaus.ts --network celo --verify",
+    "verify:optimism": "hardhat ignition verify chain-10",
+    "verify:celo": "hardhat ignition verify chain-42220"
   }
 }

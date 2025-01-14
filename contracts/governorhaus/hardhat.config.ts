@@ -1,5 +1,14 @@
 import type { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox-viem";
+import "@nomicfoundation/hardhat-ignition-viem";
+
+import { vars } from "hardhat/config";
+
+const ALCHEMY_API_KEY = vars.get("ALCHEMY_API_KEY");
+const INFURA_API_KEY = vars.get("INFURA_API_KEY");
+const WALLET_KEY = vars.get("WALLET_KEY");
+const ETHERSCAN_KEY_OPTIMISM = vars.get("ETHERSCAN_KEY_OPTIMISM");
+const ETHERSCAN_KEY_CELO = vars.get("ETHERSCAN_KEY_CELO");
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -13,41 +22,40 @@ const config: HardhatUserConfig = {
   },
   networks: {
     optimism: {
-      url: "https://optimism-mainnet.gateway.tatum.io",
-      accounts: [process.env.WALLET_KEY as string],
+      url: `https://opt-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
+      accounts: [WALLET_KEY],
     },
     celo: {
-      url: "https://forno.celo.org",
-      accounts: [process.env.WALLET_KEY as string],
-      gasPrice: 10000000000,
+      url: `https://celo-mainnet.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [WALLET_KEY],
+      gasPrice: 1000000000000,
     },
   },
   etherscan: {
     apiKey: {
-      optimism: process.env.BLOCKSCOUT_KEY as string,
-      celo: process.env.BLOCKSCOUT_KEY as string,
+      optimisticEthereum: ETHERSCAN_KEY_OPTIMISM,
+      celo: ETHERSCAN_KEY_CELO,
     },
     customChains: [
-      {
-        network: "optimism",
-        chainId: 10,
-        urls: {
-          apiURL: "https://optimism.blockscout.com/api",
-          browserURL: "https://optimism.blockscout.com",
-        },
-      },
       {
         network: "celo",
         chainId: 42220,
         urls: {
-          apiURL: "https://explorer.celo.org/mainnet/api",
-          browserURL: "https://explorer.celo.org/mainnet",
+          apiURL: "https://api.celoscan.io/api",
+          browserURL: "https://celoscan.io/",
         },
       },
     ],
   },
   sourcify: {
     enabled: false,
+  },
+  ignition: {
+    strategyConfig: {
+      create2: {
+        salt: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      },
+    },
   },
 };
 
