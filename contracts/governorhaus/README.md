@@ -14,13 +14,19 @@ a different address than the cannonical one used accross the networks.
 In order to verify the contracts, follow the steps below:
 
 ```shell
+# Set the API keys for the networks you want to verify:
 bunx hardhat vars set ETHERSCAN_KEY_OPTIMISM # API key from optimistic.etherscan.io
-# or
 bunx hardhat vars set ETHERSCAN_KEY_CELO # API key from celoscan.org
+bunx hardhat vars set ETHERSCAN_KEY_ARBITRUM # API key from arbiscan.io
+bunx hardhat vars set ETHERSCAN_KEY_BASE # API key from basescan.org
+bunx hardhat vars set ETHERSCAN_KEY_GNOSIS # API key from gnosisscan.io
+bunx hardhat vars set ETHERSCAN_KEY_POLYGON # API key from polygonscan.com
 
 bun run verify:<network>
-bunx hardhat verify --network <network> <erc20TokenAddr> "HausDAO" "HAUS" <GovernorHausAddr> <timelockAddr> <GovernorHausAddr>
-bunx hardhat verify --network <network> <ozGovernorAddr> HausDAO <erc20TokenAddr> <timelockAddr> 1 43200 1000000000000000000000000 4 0
+# Modify the ERC20Token.js file at convenience
+bunx hardhat verify --network <network> <erc20TokenAddr> --constructor-args ignition/arguments/ERC20Token.js
+# Modify the OZGovernor.js file at convenience
+bunx hardhat verify --network <network> <ozGovernorAddr> --constructor-args ignition/arguments/OZGovernor.js
 # Modify the TimelockController.js file at convenience
 bunx hardhat verify --network <network> <timelockAddr> --constructor-args ignition/arguments/TimelockController.js
 ```

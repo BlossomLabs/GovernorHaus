@@ -12,7 +12,15 @@
   "scripts": {
     "deploy:optimism": "hardhat ignition deploy ignition/modules/GovernorHaus.ts --network optimism --strategy create2 --verify",
     "deploy:celo": "hardhat ignition deploy ignition/modules/GovernorHaus.ts --network celo --verify",
+    "deploy:arbitrum": "hardhat ignition deploy ignition/modules/GovernorHaus.ts --network arbitrum --strategy create2 --verify",
+    "deploy:base": "hardhat ignition deploy ignition/modules/GovernorHaus.ts --network base --strategy create2 --verify",
+    "deploy:gnosis": "hardhat ignition deploy ignition/modules/GovernorHaus.ts --network gnosis --strategy create2 --verify",
+    "deploy:polygon": "hardhat ignition deploy ignition/modules/GovernorHaus.ts --network polygon --strategy create2 --verify",
     "verify:optimism": "hardhat ignition verify chain-10",
-    "verify:celo": "hardhat ignition verify chain-42220"
+    "verify:celo": "hardhat ignition verify chain-42220",
+    "verify:arbitrum": "hardhat ignition verify chain-42161",
+    "verify:base": "hardhat ignition verify chain-8453",
+    "verify:gnosis": "hardhat ignition verify chain-100",
+    "verify:polygon": "hardhat ignition verify chain-137"
   }
 }

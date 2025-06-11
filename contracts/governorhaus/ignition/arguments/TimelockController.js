@@ -3,7 +3,7 @@ const args = {
   proposers: [],
   executors: [],
   // Modify this at convenience (should be GovernorHaus address)
-  admin: "0xA991B2Cf871a746bbc54b87E371498B2347ffE26",
+  admin: "0xf4F2917f4564D41Fd67e0C8e6Beb37c5E3b1745F",
 };
 
 module.exports = [args.minDelay, args.proposers, args.executors, args.admin];

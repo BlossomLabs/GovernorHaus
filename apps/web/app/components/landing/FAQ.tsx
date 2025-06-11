@@ -46,7 +46,7 @@ const FAQList: FAQProps[] = [
   {
     question: "Which blockchain networks does GovernorHaus support?",
     answer:
-      "GovernorHaus currently supports deployment on the Optimism and Celo networks, both of which are compatible with Ethereum and offer lower transaction costs. We are also open to expanding support for other blockchain networks based on user demand. If you have a specific network in mind, feel free to reach out to us with your request.",
+      "GovernorHaus currently supports deployment on the Optimism, Celo, Arbitrum, Base, Gnosis, and Polygon networks, which are compatible with Ethereum and offer lower transaction costs. We are also open to expanding support for other blockchain networks based on user demand. If you have a specific network in mind, feel free to reach out to us with your request.",
     value: "item-6",
   },
   {

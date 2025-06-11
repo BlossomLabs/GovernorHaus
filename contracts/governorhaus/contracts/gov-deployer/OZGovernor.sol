@@ -190,26 +190,15 @@ contract OZGovernor is Governor, GovernorSettings, GovernorCountingSimple, Gover
     }
 
     /**
-     * @notice Casts a vote on a proposal.
-     * @param proposalId The ID of the proposal to vote on.
-     * @param account The address of the voter.
-     * @param support The vote choice (true for yes, false for no).
-     * @param reason A brief description of the reason for the vote.
-     * @param params The parameters for the vote.
-     * @return The ID of the vote.
+     * @dev Overrides the _tallyUpdated function to prevent late quorum.
+     * @param proposalId The ID of the proposal to tally.
      */
-    function _castVote(
-        uint256 proposalId,
-        address account,
-        uint8 support,
-        string memory reason,
-        bytes memory params
-    )         
+    function _tallyUpdated(uint256 proposalId)
         internal
         virtual
         override(Governor, GovernorPreventLateQuorum)
-        returns (uint256) {
-        return super._castVote(proposalId, account, support, reason,params);
+    {
+        super._tallyUpdated(proposalId);
     }
 
     /**
